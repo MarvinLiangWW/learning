@@ -7,6 +7,9 @@ class Optimize(object):
 
     def hinge_loss(self, ):
         # Define loss and optimizer
+        
+        # self.output_pos and self.output_neg 
+        
         with tf.name_scope("train"):
             with tf.name_scope("cost_function"):
                 # hinge loss
