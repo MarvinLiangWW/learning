@@ -155,7 +155,7 @@ class UTILS:
         # [L, L]
         diff = tf.expand_dims(rg, 1) - tf.expand_dims(rg, 0)
         # mask[i][j] = 1 if v>=0 and v<= maxlen-1
-        mask2d =tf.logical_and(tf.greater_equal(diff, 0),tf.less_euqal(diff,maxlen-1))
+        mask2d =tf.logical_and(tf.greater_equal(diff, 0),tf.less_equal(diff,maxlen-1))
         
         # [1, L, L]
         mask2d = tf.expand_dims(mask2d, 0)
