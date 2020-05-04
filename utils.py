@@ -140,3 +140,33 @@ class UTILS:
         # [BS, 1]
         e = tf.batch_gather(seq, length - 1)
         return e
+    
+    def my_cumsum(self,seq_emb,mask,maxlen=3):
+        '''
+        sum of the last maxlen item embeddings
+        seq_emb (batch_size,length,emb_dim) 
+        mask (batch_size,length)
+        output: (batch_size,length,emb_dim) 
+        '''
+        seq_emb_d1 = tf.expand_dims(seq_emb,1) # BS,1,L,K
+        mask_d1 = tf.expand_dims(mask, 1) # BS,1 L,
+        mask_d2 = tf.expand_dims(mask, 2) # BS,L,1
+        rg = tf.range(tf.shape(seq_emb)[1], dtype=tf.int32)
+        # [L, L]
+        diff = tf.expand_dims(rg, 1) - tf.expand_dims(rg, 0)
+        # mask[i][j] = 1 if v>=0 and v<= maxlen-1
+        mask2d =tf.logical_and(tf.greater_equal(diff, 0),tf.less_euqal(diff,maxlen-1))
+        
+        # [1, L, L]
+        mask2d = tf.expand_dims(mask2d, 0)
+        # [BS, L, L]
+        mask2d = tf.logical_and(mask2d, mask_d1)
+        mask2d = tf.logical_and(mask2d, mask_d2)
+        mask2d = tf.cast(mask2d, tf.float32)
+
+        # [BS, 1, L, k] x [BS,L, L] --> [BS, L, k]
+        seq_left = tf.reduce_sum(seq_emb_d1 * tf.expand_dims(mask2d,-1),-2)
+        cumsum_div = tf.reduce_sum(mask2d,axis = -1)
+        
+        res = seq_left/(tf.expand_dims(cumsum_div, -1)+ tf.exp(-8.0))
+        return res
