@@ -39,7 +39,17 @@ def reduce_mem_usage(df):
     
     return df
 
-# using the above function
+# invoke the above function
 def load_data(path):
     user = reduce_mem_usage(pd.read_csv(path + 'user.csv',header=None))
     item = reduce_mem_usage(pd.read_csv(path + 'item.csv',header=None))
+
+# look good, may use in another day 
+def func():
+    for count_feature in ['itemID', 'shop', 'category','brand']:
+        data[['behavior', count_feature]].groupby(count_feature, as_index=False).agg(
+            {'behavior':'count'}).rename(columns={'behavior':count_feature + '_count'}).to_csv(str(count_feature)+'_count.csv', index=False)
+
+    for count_feature in ['itemID', 'shop', 'category','brand']:
+        data[['behavior', count_feature]].groupby(count_feature, as_index=False).agg(
+            {'behavior':'sum'}).rename(columns={'behavior':count_feature + '_sum'}).to_csv(str(count_feature)+'_sum.csv', index=False)
