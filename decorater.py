@@ -1,3 +1,14 @@
+import time
+
+'''自身不传入参数的装饰器（采用两层函数定义装饰器）'''
+def login(func):
+    def wrapper(*args,**kargs):
+        print('function name %s'%func.__name__)
+        return func(*args,**kargs)
+    return wrapper
+
+
+
 def fn_timer(function):
     '''
     usage:
