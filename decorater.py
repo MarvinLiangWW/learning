@@ -2,17 +2,17 @@ import time
 
 '''自身不传入参数的装饰器（采用两层函数定义装饰器）'''
 def login(func):
-    def wrapper(*args,**kargs):
+    def wrapper(*args,**kwargs):
         print('function name %s'%func.__name__)
-        return func(*args,**kargs)
+        return func(*args,**kwargs)
     return wrapper
 
 '''自身传入参数的装饰器（采用三层函数定义装饰器）'''
 def login(text):
     def decorator(func):
-        def wrapper(*args,**kargs):
+        def wrapper(*args,**kwargs):
             print('function name %s'%func.__name__)
-            return func(*args,**kargs)
+            return func(*args,**kwargs)
         return wrapper
     return decorator
 # 等价于 -> (login(text))(f) -> return wrapper
@@ -28,6 +28,61 @@ def login(text):
 
 '''
 
+'''多个装饰器的调用顺序与执行结果'''
+def decorator_a(func):
+    print('Get in decorator_a')
+    def inner_a(*args,**kwargs):
+        print('Get in inner_a')
+        return func(*args,**kwargs)
+    return inner_a
+
+def decorator_b(func):
+    print('Get in decorator_b')
+    def inner_b(*args,**kwargs):
+        print('Get in inner_b')
+        return func(*args,**kwargs)
+    return inner_b
+
+@decorator_b
+@decorator_a
+def f(x):
+    print('Get in f')
+    return x**2
+
+f(1)
+
+'''
+the corresponding output result:
+Get in decorator_a
+Get in decorator_b
+Get in inner_b
+Get in inner_a
+Get in f
+1
+
+explaination: https://segmentfault.com/a/1190000007837364
+'''
+
+
+'''
+实际的应用场景中，不需要太过研究细节，只需要按照逻辑进行调用
+example：
+写了两个装饰方法比如
+1.先验证有没有登录@login_required
+2.再验证权限不够使@permission_allowed
+采用下面的顺序来装饰函数：
+@login_required
+@permission_allowed
+def f():
+    # Do something
+    return
+'''
+    
+
+
+
+
+# 常用的函数计时装饰器。
 def fn_timer(function):
     '''
     usage:
