@@ -1,1 +1,1 @@
-This repository is created attempts to collect useful functions.
+This repository attempts to collect useful functions.
