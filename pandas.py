@@ -45,3 +45,19 @@ def gen_group_dict(data):
     i2i_sim_seq[(item,relate_item)] = [(loc1, loc2, t1, t2, len(items)]
     '''
 
+
+
+
+def func(row):
+    c = row[row['actv_dt'] > '2020-01-01'].actv_cnt.sum()
+    return pd.Series({'actv_cnt': c})
+
+def invloke():
+    # 两种实现groupby之后 根据条件进行聚合
+    df = pd.DataFrame()
+
+    # solution 1
+    agg_actv_cnt = df.groupby(['ads_channel', 'plat']).apply(func)
+
+    # solution 2
+    agg_actv_cnt = df.groupby(['ads_channel', 'plat']).apply(lambda x: pd.Series({'actv_cnt': x[x['actv_dt'] > '2020-01-01'].actv_cnt.sum()}))
